@@ -196,8 +196,16 @@ class Session extends React.Component {
   };
 
   componentDidMount = async () => {
-    const response = await API.graphql(graphqlOperation(listCharacters, {profile: this.props.profile}));
+    console.log(this.props.profile)
+    const filter = {
+      profileCharacterId: {
+        eq: this.props.profile
+        }
+      }
+    const response = await API.graphql(graphqlOperation(listCharacters, {filter}));
     console.log(response)
+    const characters = response.data.listCharacters.items
+    this.setState({characters})
     // fetch(`/session?profileId=${this.props.profile}`)
     //   .then((response) => response.json())
     //   .then((characters) => this.setState(characters));
