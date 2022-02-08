@@ -1,25 +1,66 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Profiles from "./components/Profiles";
+// import { Button } from './Button'
+import Session from "./components/Session";
+import Amplify from "aws-amplify";
+import awsExports from "./aws-exports";
+Amplify.configure(awsExports);
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedProfile: "",
+      characters: [],
+      selectedCharacter: "",
+    };
+  }
+
+  onProfileClick = (event) => {
+    // console.log(this)
+    event.preventDefault();
+    // console.log(event)
+    this.setState(
+      { selectedProfile: event.target.attributes.value.value },
+      console.log(this.state)
+    );
+  };
+
+  // onCharacterClick = (event) => {
+  //     event.preventDefault()
+  //     this.setState( {selectedCharacter: event.target.attributes.value.nodeValue}, console.log(this.state.selectedCharacter) )
+  // }
+
+  componentDidUpdate = (prevProp, prevState) => {
+    if (this.state.selectedProfile !== prevState.selectedProfile) {
+      fetch(`/session?profileId=${this.state.selectedProfile}`)
+        .then((response) => response.json())
+        .then((characters) => this.setState({ characters }));
+    }
+  };
+
+  render() {
+    // console.log(this.state)
+    return (
+      <div>
+        <div>
+          <div>App Component</div>
+          {this.state.selectedProfile ? (
+            <Session profile={this.state.selectedProfile} />
+          ) : (
+            <div>
+              Select a profile:
+              <Profiles handleClick={this.onProfileClick} />
+            </div>
+          )}
+        </div>
+        {/* <div>
+                    <Button backgroundColor='cyan' >Test Button</Button>
+                </div> */}
+      </div>
+    );
+  }
 }
 
 export default App;
