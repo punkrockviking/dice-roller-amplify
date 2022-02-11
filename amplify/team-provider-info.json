@@ -10,6 +10,11 @@
       "StackName": "amplify-dicerolleramplify-dev-200238",
       "StackId": "arn:aws:cloudformation:us-west-1:159696917799:stack/amplify-dicerolleramplify-dev-200238/959c4180-888b-11ec-a54a-0261ca15b003",
       "AmplifyAppId": "d1bov2m5bgyg1v"
+    },
+    "categories": {
+      "auth": {
+        "dicerolleramplify1f754be5": {}
+      }
     }
   }
 }

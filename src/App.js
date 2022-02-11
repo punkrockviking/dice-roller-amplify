@@ -2,8 +2,11 @@ import React from "react";
 import Profiles from "./components/Profiles";
 // import { Button } from './Button'
 import Session from "./components/Session";
-import Amplify from "aws-amplify";
+import Amplify, { Auth, Hub } from 'aws-amplify';
+import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 import awsExports from "./aws-exports";
+import { withAuthenticator } from '@aws-amplify/ui-react';
+// import '@aws-amplify/ui-react/styles.css';
 Amplify.configure(awsExports);
 
 
@@ -11,6 +14,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: null,
       selectedProfile: "",
       characters: [],
       selectedCharacter: "",
@@ -42,8 +46,10 @@ class App extends React.Component {
 
   render() {
     // console.log(this.state)
+    console.log(this.props)
     return (
       <div>
+        
         <div>
           <div>App Component</div>
           {this.state.selectedProfile ? (
@@ -63,4 +69,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withAuthenticator(App);
