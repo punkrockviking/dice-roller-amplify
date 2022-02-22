@@ -10,11 +10,12 @@ import Total from "./Total";
 import RollStats from "./RollStats";
 import Proficiency from "./Proficiency";
 import Advantage from "./Advantage";
+import Feats from "./Feats"
 import RollLog from "./RollLog";
 import RollButton from "./RollButton";
 import ResetButton from "./ResetButton"
 import { API, graphqlOperation } from "aws-amplify";
-import { listCharacters } from "../graphql/queries";
+import { listCharacters, getCharacter } from "../graphql/queries";
 
 class Session extends React.Component {
   constructor(props) {
@@ -22,18 +23,17 @@ class Session extends React.Component {
     this.state = {
       characters: [],
       selectedCharacter: {
-        _id: "",
+        id: "",
         name: "",
-        _profile: {},
+        profile: {},
         class: "",
-        level: null,
-        str: null,
-        dex: null,
-        con: null,
-        wis: null,
-        int: null,
-        chr: null,
-        defaultAttack: {},
+        level: 0,
+        str: 0,
+        dex: 0,
+        con: 0,
+        wis: 0,
+        int: 0,
+        chr: 0,
       },
       selectedDice: 20,
       selectedDiceQty: 1,
@@ -48,7 +48,7 @@ class Session extends React.Component {
         name: "",
         num: null,
       },
-      featMod: "",
+      feat: "",
       rollLog: [],
       dice:   [
         {
@@ -90,14 +90,14 @@ class Session extends React.Component {
     };
   }
 
-  // const { selectedCharacter, selectedDice, selectedDiceQty, rawRoll, statMod, advantage, proficient, featMod, rollLog} = this.state
+  // const { selectedCharacter, selectedDice, selectedDiceQty, rawRoll, statMod, advantage, proficient, feat, rollLog} = this.state
 
-  onStatChange = (event) => {
+  onAttributeChange = (event) => {
     console.log(event);
     this.setState({
       selectedCharacter: {
         ...this.state.selectedCharacter,
-        [event.target.name]: event.target.valueAsNumber,
+        [event.target.name]: event.target.valueAsNumber || event.target.value,
       },
     });
   };
@@ -144,7 +144,7 @@ class Session extends React.Component {
         name: "",
         num: null,
       },
-      featMod: "",
+      feat: "",
     })
   }
 
@@ -161,38 +161,34 @@ class Session extends React.Component {
     // need to conditionally config rolls
     const { rawRoll, selectedDice, statMod, proficient } = this.state
     let totalRoll = 0
-    if (rawRoll.length >= 1) {
-      // add up the sum of all indexes in rawRoll and set totalRoll equal to sum
-      totalRoll = rawRoll.reduce(add, 0)
-      function add(accumulator, a) {
-        return accumulator + a
-      }
-      if (selectedDice === 20) {
-        // roll with adv or disadv
-        
-        // proficiency only helps d20 rolls
+    const isFeatUsed = statMod.stat === 'str' || statMod.stat === 'dex'
+    
+    // add up the sum of all indexes in rawRoll and set totalRoll equal to sum
+    totalRoll = rawRoll.reduce((sum, num) => sum + num, 0)
+    console.log('total raw roll is', totalRoll)
+    switch(selectedDice) {
+      case 20 : 
         totalRoll = (totalRoll + statMod.num + proficient.num)
-        if (this.state.greatWeaponMaster) {
+        // roll with adv or disadv
+        if (this.state.feat && isFeatUsed) {
           // subtract 5 from roll
+          totalRoll -= 5
           // create roll log entry
-          // return
         }
-        return totalRoll
-      } if (selectedDice === 100) {
+        break
+      case 100:
         // no mods add to d100 roll
-        totalRoll = rawRoll
-        return totalRoll
-      } else {
+        break
+      default: 
         // stats may or may not help d4-d12 rolls
         totalRoll += (statMod.num)
-        if (this.state.greatWeaponMaster) {
+        if (this.state.feat && isFeatUsed) {
           // add 10 to roll
+          totalRoll += 10
           // create roll log entry
-          // return
         }
-        return totalRoll
       }
-    }
+    return totalRoll
   };
 
   componentDidMount = async () => {
@@ -202,27 +198,39 @@ class Session extends React.Component {
         eq: this.props.profile
         }
       }
-    const response = await API.graphql(graphqlOperation(listCharacters, {filter}));
-    console.log(response)
-    const characters = response.data.listCharacters.items
-    this.setState({characters})
+    try {
+      const response = await API.graphql(graphqlOperation(listCharacters, {filter}));
+      console.log(response)
+      const characters = response.data.listCharacters.items
+      this.setState({characters})
+    } catch(err) {
+      console.error(err)
+    }
     // fetch(`/session?profileId=${this.props.profile}`)
     //   .then((response) => response.json())
     //   .then((characters) => this.setState(characters));
     // .then(console.log('characters are', this.state.characters))
   };
 
-  onCharacterClick = (event) => {
+  onCharacterClick = async (event) => {
     event.preventDefault();
+    console.log(event)
     const targetId = event.target.attributes.value.value;
-    const selectedCharacter = this.state.characters.find(
-      (character) => character._id === targetId
-    );
-    // console.log(event)
-    this.setState(
-      { selectedCharacter },
-      console.log("selectedCharacter state updated")
-    );
+    console.log(targetId)
+    // const selectedCharacter = this.state.characters.find(
+    //   (character) => character.id === targetId
+    // );
+    try {
+      const response = await API.graphql(graphqlOperation(getCharacter, {id: targetId}));
+      console.log(response)
+      const selectedCharacter = response.data.getCharacter
+      this.setState(
+        { selectedCharacter },
+        console.log("selectedCharacter state updated")
+      );
+    } catch(err) {
+      console.log(err)
+    }
   };
 
   updateRawRoll = (total) => {
@@ -284,6 +292,18 @@ class Session extends React.Component {
     }, console.log(this.state.advantage))
   }
 
+  updateFeat = (val) => {
+    this.setState({
+      feat: val,
+    }, console.log('Feat is', this.state.feat))
+  }
+
+  resetFeat = () => {
+    this.setState({
+      feat: '',
+    }, console.log('Reset Feat', this.state.feat))
+  }
+
   fetchRollLog = ({ rollLog }) => {
     console.log('initializing roll log state', { rollLog })
     this.setState({ rollLog })
@@ -343,11 +363,11 @@ class Session extends React.Component {
     return (
       <div>
         <div>
-          {this.state.selectedCharacter._id ? (
+          {this.state.selectedCharacter.id ? (
             <div>
               <CharacterInfo
                 character={this.state.selectedCharacter}
-                onStatChange={this.onStatChange}
+                onAttributeChange={this.onAttributeChange}
               />
               <RollLog
                 id={this.state.selectedCharacter._id}
@@ -382,6 +402,7 @@ class Session extends React.Component {
                 selectedProf={this.state.proficient}
               />
               <Advantage selectedAdv={this.state.advantage} update={this.updateAdvantage} reset={this.resetAdvantage} />
+              <Feats selectedFeat={this.state.feat} update={this.updateFeat} reset={this.resetFeat} /> 
             </div>
           ) : (
             <CharacterList

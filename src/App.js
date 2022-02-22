@@ -36,13 +36,13 @@ class App extends React.Component {
   //     this.setState( {selectedCharacter: event.target.attributes.value.nodeValue}, console.log(this.state.selectedCharacter) )
   // }
 
-  componentDidUpdate = (prevProp, prevState) => {
-    if (this.state.selectedProfile !== prevState.selectedProfile) {
-      fetch(`/session?profileId=${this.state.selectedProfile}`)
-        .then((response) => response.json())
-        .then((characters) => this.setState({ characters }));
-    }
-  };
+  // componentDidUpdate = (prevProp, prevState) => {
+  //   if (this.state.selectedProfile !== prevState.selectedProfile) {
+  //     fetch(`/session?profileId=${this.state.selectedProfile}`)
+  //       .then((response) => response.json())
+  //       .then((characters) => this.setState({ characters }));
+  //   }
+  // };
 
   render() {
     // console.log(this.state)

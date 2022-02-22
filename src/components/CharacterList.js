@@ -6,8 +6,8 @@ class CharacterList extends React.Component {
       <div>
         {this.props.characters.map((character) => (
           <div
-            key={character._id}
-            value={character._id}
+            key={character.id}
+            value={character.id}
             onClick={this.props.handleClick}
           >
             {character.name}

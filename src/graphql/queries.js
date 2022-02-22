@@ -56,27 +56,6 @@ export const getCharacter = /* GraphQL */ `
     getCharacter(id: $id) {
       id
       name
-      profile {
-        id
-        name
-        character {
-          nextToken
-        }
-        activeCharacter
-        createdAt
-        updatedAt
-      }
-      rollLog {
-        items {
-          id
-          timestamp
-          text
-          createdAt
-          updatedAt
-          characterRollLogId
-        }
-        nextToken
-      }
       class
       level
       str
@@ -85,9 +64,6 @@ export const getCharacter = /* GraphQL */ `
       wis
       int
       chr
-      createdAt
-      updatedAt
-      profileCharacterId
     }
   }
 `;

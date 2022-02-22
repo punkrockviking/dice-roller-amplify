@@ -1,7 +1,10 @@
 import React from "react";
+import { API, graphqlOperation } from "aws-amplify";
+import { updateCharacter } from "../graphql/mutations";
 // import Form from "./Form";
 
 class CharacterInfo extends React.Component {
+  
   calcProficiency = () => {
     if (this.props.character.level <= 4) {
       return 2;
@@ -19,17 +22,34 @@ class CharacterInfo extends React.Component {
       return 6;
     }
   };
-
-  onFormSubmit = (event) => {
+  
+  onFormSubmit = async (event) => {
     event.preventDefault();
-    // console.log(this.props.character);
-    fetch(`/session`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(this.props.character),
-    });
+    console.log(this.props.character);
+    // try {
+    //   const response = await API.graphql(graphqlOperation(updateCharacter, {input: {...this.props.character}}));
+    //   console.log('******************', response)
+    // } catch(err) {
+    //   console.error(err)
+    // }
+    try {
+      const response = await API.graphql({
+        query: updateCharacter,
+        variables: {input: {...this.props.character}}
+      });
+      console.log('******************', response)
+    } catch(err) {
+      console.error(err)
+    }
+    
+
+    // fetch(`/session`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-type": "application/json",
+    //   },
+    //   body: JSON.stringify(this.props.character),
+    // });
   };
 
   render() {
@@ -44,7 +64,7 @@ class CharacterInfo extends React.Component {
                 type="string"
                 name="name"
                 value={this.props.character.name}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
           </form>
@@ -58,7 +78,7 @@ class CharacterInfo extends React.Component {
                 min="1"
                 max="20"
                 value={this.props.character.level}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
             <label>PROFICIENCY:{this.calcProficiency()}</label>
@@ -73,7 +93,7 @@ class CharacterInfo extends React.Component {
                 min="1"
                 max="24"
                 value={this.props.character.str}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
             <label>Mod:{Math.floor((this.props.character.str - 10) / 2)}</label>
@@ -88,7 +108,7 @@ class CharacterInfo extends React.Component {
                 min="1"
                 max="24"
                 value={this.props.character.dex}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
             <label>Mod:{Math.floor((this.props.character.dex - 10) / 2)}</label>
@@ -103,7 +123,7 @@ class CharacterInfo extends React.Component {
                 min="1"
                 max="24"
                 value={this.props.character.con}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
             <label>Mod:{Math.floor((this.props.character.con - 10) / 2)}</label>
@@ -118,7 +138,7 @@ class CharacterInfo extends React.Component {
                 min="1"
                 max="24"
                 value={this.props.character.wis}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
             <label>Mod:{Math.floor((this.props.character.wis - 10) / 2)}</label>
@@ -133,7 +153,7 @@ class CharacterInfo extends React.Component {
                 min="1"
                 max="24"
                 value={this.props.character.int}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
             <label>Mod:{Math.floor((this.props.character.int - 10) / 2)}</label>
@@ -148,7 +168,7 @@ class CharacterInfo extends React.Component {
                 min="1"
                 max="24"
                 value={this.props.character.chr}
-                onChange={this.props.onStatChange}
+                onChange={this.props.onAttributeChange}
               />
             </label>
             <label>Mod:{Math.floor((this.props.character.chr - 10) / 2)}</label>
