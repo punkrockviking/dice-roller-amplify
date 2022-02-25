@@ -37,8 +37,7 @@ class Session extends React.Component {
       },
       selectedDice: 20,
       selectedDiceQty: 1,
-      rawRoll: [],
-      totalRoll: null,
+      totalRoll: 0,
       statMod: {
         stat: '',
         num: null,
@@ -159,7 +158,7 @@ class Session extends React.Component {
 
   calcTotalRoll = () => {
     // need to conditionally config rolls
-    const { rawRoll, selectedDice, statMod, proficient } = this.state
+    const { rawRoll, selectedDice, statMod, proficient, feat } = this.state
     let totalRoll = 0
     const isFeatUsed = statMod.stat === 'str' || statMod.stat === 'dex'
     
@@ -170,7 +169,7 @@ class Session extends React.Component {
       case 20 : 
         totalRoll = (totalRoll + statMod.num + proficient.num)
         // roll with adv or disadv
-        if (this.state.feat && isFeatUsed) {
+        if (isFeatUsed && feat) {
           // subtract 5 from roll
           totalRoll -= 5
           // create roll log entry
@@ -182,7 +181,7 @@ class Session extends React.Component {
       default: 
         // stats may or may not help d4-d12 rolls
         totalRoll += (statMod.num)
-        if (this.state.feat && isFeatUsed) {
+        if (isFeatUsed && feat) {
           // add 10 to roll
           totalRoll += 10
           // create roll log entry
@@ -233,8 +232,9 @@ class Session extends React.Component {
     }
   };
 
-  updateRawRoll = (total) => {
-    this.setState({ rawRoll: total });
+  updateTotalRoll = (total) => {
+    this.setState({ totalRoll: total });
+    console.log('UPDATING TOTAL ROLL *********')
   };
 
   updateSelectedDice = (die) => {
@@ -384,11 +384,16 @@ class Session extends React.Component {
                 sides={this.state.selectedDice}
                 name={`D${this.state.selectedDice}`}
                 qty={this.state.selectedDiceQty}
-                updateRawRoll={this.updateRawRoll}
+                selectedDice={this.state.selectedDice}
+                statMod={this.state.statMod}
+                proficient={this.state.proficient}
+                feat={this.state.feat}
+                advantage={this.state.advantage}
                 updateRollLog={this.updateRollLog}
-              />
+                update={this.updateTotalRoll}
+                />
               <Total
-                total={this.calcTotalRoll}
+                total={this.state.totalRoll}
                 // onDiceClick={this.onDiceClick}
               />
               <ResetButton text="Reset Dice" reset={this.resetDiceButtons} resetQty={this.resetDiceQty} />
