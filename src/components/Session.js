@@ -391,6 +391,7 @@ class Session extends React.Component {
                 advantage={this.state.advantage}
                 updateRollLog={this.updateRollLog}
                 update={this.updateTotalRoll}
+                character={this.state.selectedCharacter.id}
                 />
               <Total
                 total={this.state.totalRoll}

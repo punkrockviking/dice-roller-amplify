@@ -3,6 +3,7 @@ import Button from "./Button"
 
 
 class RollButton extends React.Component {
+
   calcTotalRoll = (rolls, selectedDice, statMod, proficient, feat, advantage) => {
     // need to conditionally config rolls
     let totalRoll = 0
@@ -10,13 +11,20 @@ class RollButton extends React.Component {
     
     // add up the sum of all indexes in rolls and set totalRoll equal to sum
     totalRoll = rolls.reduce((sum, num) => sum + num, 0)
+    const advantageMessage = advantage ? `Rolling with ${advantage}: ` : ''
+    let message = `${advantageMessage}${rolls.join(' + ')} on the dice `
     console.log('total raw roll is', totalRoll)
+    let statModMessage
     switch(selectedDice) {
       case 20 : 
         totalRoll = (totalRoll + statMod.num + proficient.num)
+        statModMessage = statMod.stat ? `+ ${statMod.num} for ${statMod.stat} ` : ''
+        const proficientMessage = proficient.name ? `+ ${proficient.num} for ${proficient.name} ` : ''
+        message += statModMessage + proficientMessage
         // roll with adv or disadv
         if (isFeatUsed && feat) {
           // subtract 5 from roll
+          message += '- 5 for GWM/SS '
           totalRoll -= 5
           // create roll log entry
         }
@@ -26,14 +34,18 @@ class RollButton extends React.Component {
         break
       default: 
         // stats may or may not help d4-d12 rolls
+        statModMessage = statMod.stat ? `+ ${statMod.num} for ${statMod.stat} ` : ''
+        message += statModMessage
         totalRoll += (statMod.num)
         if (isFeatUsed && feat) {
           // add 10 to roll
+          message += '+ 10 for GWM/SS '
           totalRoll += 10
           // create roll log entry
         }
       }
-    return totalRoll
+    message += `for a total score of ${totalRoll}!`
+    return [totalRoll, message]
   };
 
 
@@ -49,16 +61,27 @@ class RollButton extends React.Component {
     );
     return rolls
   };
+
+  createLogEntry = (characterId, text) => {
+    const rollLog = {
+      character: characterId,
+      timestamp: new Date(),
+      text: text,
+    }
+    console.log(rollLog)
+  }
   
   onRoll = (event) => {
     event.preventDefault();
-    const { selectedDice, statMod, proficient, feat, advantage, name, qty, sides, update } = this.props
+    const { selectedDice, statMod, proficient, feat, advantage, name, qty, sides, update, character } = this.props
     const firstRolls = this.rollDice(qty, sides, name);
-    const firstTotalRoll = this.calcTotalRoll(firstRolls, selectedDice, statMod, proficient, feat)
-    let totalRoll, secondRolls, secondTotalRoll
+    const [firstTotalRoll, firstMessage] = this.calcTotalRoll(firstRolls, selectedDice, statMod, proficient, feat, advantage)
+    this.createLogEntry(character, firstMessage)
+    let totalRoll, secondRolls, secondTotalRoll, secondMessage
     if (advantage) {
       secondRolls = this.rollDice(qty, sides, name);
-      secondTotalRoll = this.calcTotalRoll(secondRolls, selectedDice, statMod, proficient, feat)
+      [secondTotalRoll, secondMessage] = this.calcTotalRoll(secondRolls, selectedDice, statMod, proficient, feat, advantage)
+      this.createLogEntry(character, secondMessage)
     }
     switch(advantage) {
       case 'advantage':
@@ -75,6 +98,7 @@ class RollButton extends React.Component {
     update(totalRoll)
   };
 
+
   render() {
     return (
       <div>
@@ -86,3 +110,8 @@ class RollButton extends React.Component {
 }
 
 export default RollButton;
+
+
+// pass down values for rollLog component into this component
+// mutate my log entry in my createLogEntry method 
+// manipulate the passed down roll log with new entries, pass it back up to parent state
