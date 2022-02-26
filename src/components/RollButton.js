@@ -1,5 +1,7 @@
 import React from "react";
 import Button from "./Button"
+import { API, graphqlOperation } from "aws-amplify";
+import { createRollLog } from "../graphql/mutations";
 
 
 class RollButton extends React.Component {
@@ -62,13 +64,22 @@ class RollButton extends React.Component {
     return rolls
   };
 
-  createLogEntry = (characterId, text) => {
+  createLogEntry = async (characterId, text) => {
     const rollLog = {
       character: characterId,
       timestamp: new Date(),
       text: text,
     }
     console.log(rollLog)
+    try {
+      const response = await API.graphql({
+        query: createRollLog,
+        variables: {input: {...rollLog}}
+      });
+      console.log('******************', response)
+    } catch(err) {
+      console.error(err)
+    }
   }
   
   onRoll = (event) => {
