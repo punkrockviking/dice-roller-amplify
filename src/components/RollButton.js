@@ -66,7 +66,7 @@ class RollButton extends React.Component {
 
   createLogEntry = async (characterId, text) => {
     const rollLog = {
-      character: characterId,
+      characterRollLogId: characterId,
       timestamp: new Date(),
       text: text,
     }

@@ -24,9 +24,18 @@ type Character @model {
   chr: Int
 }
 
+# type RollLog @model {
+#   id: ID!
+#   character: String!
+#   timestamp: AWSDateTime!
+#   text: String!
+# }
+
+#  reference to orifinal RollLog schema that contains the entire character object that it's linked to
 type RollLog @model {
   id: ID!
-  character: Character! @belongsTo
+  character: Character! @belongsTo 
   timestamp: AWSDateTime!
   text: String!
 }
+# need to figure out how to use the belongsTo property in createRollLog
