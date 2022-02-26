@@ -80,6 +80,7 @@ class RollButton extends React.Component {
     } catch(err) {
       console.error(err)
     }
+    return rollLog
   }
   
   onRoll = (event) => {

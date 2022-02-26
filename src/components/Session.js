@@ -15,7 +15,7 @@ import RollLog from "./RollLog";
 import RollButton from "./RollButton";
 import ResetButton from "./ResetButton"
 import { API, graphqlOperation } from "aws-amplify";
-import { listCharacters, getCharacter } from "../graphql/queries";
+import { listCharacters, getCharacter, listRollLogs } from "../graphql/queries";
 
 class Session extends React.Component {
   constructor(props) {
@@ -304,44 +304,25 @@ class Session extends React.Component {
     }, console.log('Reset Feat', this.state.feat))
   }
 
-  fetchRollLog = ({ rollLog }) => {
-    console.log('initializing roll log state', { rollLog })
-    this.setState({ rollLog })
+  
+
+  updateRollLog = (newLog) => {
+    this.setState({rollLog: newLog})
+    // const newEntry = this.createRollLogEntry(roll)
+    // const updatedLog = this.state.rollLog
+    // console.log('old log', updatedLog)
+    // if (updatedLog.length >= 10) {
+    //   updatedLog.pop()
+    // }
+    // updatedLog.unshift(newEntry)
+    // console.log('new log', updatedLog)
+    // this.setState({rollLog: updatedLog})
+    // this.postLogEntry(newEntry)
   }
 
-  updateRollLog = (roll) => {
-    const newEntry = this.createRollLogEntry(roll)
-    const updatedLog = this.state.rollLog
-    console.log('old log', updatedLog)
-    if (updatedLog.length >= 10) {
-      updatedLog.pop()
-    }
-    updatedLog.unshift(newEntry)
-    console.log('new log', updatedLog)
-    this.setState({rollLog: updatedLog})
-    this.postLogEntry(newEntry)
-  }
+  
 
-  createRollLogEntry = (roll) => {
-    const newEntry = {
-      timestamp: Date(), 
-      text: `Your roll was ${roll}`,
-      _character: this.state.selectedCharacter._id,
-    }
-    // endless loop
-    // this.updateRollLog(newEntry)
-    return newEntry
-  }
 
-  postLogEntry = (entry) => {
-    fetch(`/rollLog?characterId=${this.state.selectedCharacter._id}`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(entry),
-    })
-  }  
 
   renderDice = () => {
     const displayDice = this.state.dice.map(die => {
@@ -370,12 +351,9 @@ class Session extends React.Component {
                 onAttributeChange={this.onAttributeChange}
               />
               <RollLog
-                id={this.state.selectedCharacter._id}
-                fetch={this.fetchRollLog}
+                id={this.state.selectedCharacter.id}
                 update={this.updateRollLog}
-                createEntry={this.createRollLogEntry}
                 log={this.state.rollLog}
-                lastRoll={this.state.rawRoll}
               />
               <div>
                 {this.renderDice()}
@@ -392,6 +370,7 @@ class Session extends React.Component {
                 updateRollLog={this.updateRollLog}
                 update={this.updateTotalRoll}
                 character={this.state.selectedCharacter.id}
+                log={this.state.rollLog}
                 />
               <Total
                 total={this.state.totalRoll}

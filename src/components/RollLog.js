@@ -1,4 +1,6 @@
 import React from "react";
+import { API, graphqlOperation } from "aws-amplify";
+import { listRollLogs } from "../graphql/queries";
 
 class RollLog extends React.Component {
   // constructor(props) {
@@ -10,17 +12,35 @@ class RollLog extends React.Component {
 
   //FIGURE OUT A WAY TO FIND THE ARRAY WITH THE LOG ENTRIES THEN MAP THROUGH THE ENTRIES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  // addToLog = () => {
-  //   let newLog = this.props.log
-  //   newLog.push(this.props.lastRoll);
-  //   console.log(newLog)
-  //   return newLog;
-  // };
+  getRollLog = async (characterId) => {
+    const filter = {
+      characterRollLogId: {
+        eq: characterId
+        }
+      }
+    try {
+      const response = await API.graphql(graphqlOperation(listRollLogs, {filter}, 10)); //limit 10 entries
+      console.log(response)
+      const rollLog = response.data.listRollLogs.items
+      // set parent state with the 10 roll log entries just listed
+      this.props.update(rollLog)
+    } catch(err) {
+      console.error(err)
+    }
+    // console.log('initializing roll log state', { rollLog })
+    // this.setState({ rollLog })
+  }
   
   componentDidMount = () => {
-    fetch(`/rollLog?characterId=${this.props.id}`)
-      .then((response) => response.json())
-      .then(({rollLog}) => this.props.fetch({ rollLog }));
+    // fetch(`/rollLog?characterId=${this.props.id}`)
+    //   .then((response) => response.json())
+    //   .then(({rollLog}) => this.props.fetch({ rollLog }));
+    
+    // Initialize roll log with data from db
+    this.getRollLog(this.props.id)
+    
+    
+        // CHECK THE OBJECT THAT IS BEING RETRIEVED FROM MY QUERY. FIND THE PROPERTY WHERE THE ARRAY IS. YOU NEED TO USE THAT PROPERTY TO MAP THE LOG ENTRIES
   };
 
   // onClick = () => {
