@@ -156,39 +156,39 @@ class Session extends React.Component {
     return rollObj
   }
 
-  calcTotalRoll = () => {
-    // need to conditionally config rolls
-    const { rawRoll, selectedDice, statMod, proficient, feat } = this.state
-    let totalRoll = 0
-    const isFeatUsed = statMod.stat === 'str' || statMod.stat === 'dex'
+  // calcTotalRoll = () => {
+  //   // need to conditionally config rolls
+  //   const { rawRoll, selectedDice, statMod, proficient, feat } = this.state
+  //   let totalRoll = 0
+  //   const isFeatUsed = statMod.stat === 'str' || statMod.stat === 'dex'
     
-    // add up the sum of all indexes in rawRoll and set totalRoll equal to sum
-    totalRoll = rawRoll.reduce((sum, num) => sum + num, 0)
-    console.log('total raw roll is', totalRoll)
-    switch(selectedDice) {
-      case 20 : 
-        totalRoll = (totalRoll + statMod.num + proficient.num)
-        // roll with adv or disadv
-        if (isFeatUsed && feat) {
-          // subtract 5 from roll
-          totalRoll -= 5
-          // create roll log entry
-        }
-        break
-      case 100:
-        // no mods add to d100 roll
-        break
-      default: 
-        // stats may or may not help d4-d12 rolls
-        totalRoll += (statMod.num)
-        if (isFeatUsed && feat) {
-          // add 10 to roll
-          totalRoll += 10
-          // create roll log entry
-        }
-      }
-    return totalRoll
-  };
+  //   // add up the sum of all indexes in rawRoll and set totalRoll equal to sum
+  //   totalRoll = rawRoll.reduce((sum, num) => sum + num, 0)
+  //   console.log('total raw roll is', totalRoll)
+  //   switch(selectedDice) {
+  //     case 20 : 
+  //       totalRoll = (totalRoll + statMod.num + proficient.num)
+  //       // roll with adv or disadv
+  //       if (isFeatUsed && feat) {
+  //         // subtract 5 from roll
+  //         totalRoll -= 5
+  //         // create roll log entry
+  //       }
+  //       break
+  //     case 100:
+  //       // no mods add to d100 roll
+  //       break
+  //     default: 
+  //       // stats may or may not help d4-d12 rolls
+  //       totalRoll += (statMod.num)
+  //       if (isFeatUsed && feat) {
+  //         // add 10 to roll
+  //         totalRoll += 10
+  //         // create roll log entry
+  //       }
+  //     }
+  //   return totalRoll
+  // };
 
   componentDidMount = async () => {
     console.log(this.props.profile)

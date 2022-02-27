@@ -13,7 +13,8 @@ class RollButton extends React.Component {
     
     // add up the sum of all indexes in rolls and set totalRoll equal to sum
     totalRoll = rolls.reduce((sum, num) => sum + num, 0)
-    const advantageMessage = advantage ? `Rolling with ${advantage}: ` : ''
+    const advantageMessage = advantage ? `${advantage.toUpperCase()}: ` : ''
+    // NEED TO GET ADVANTAGE INTO THE CASE 20
     let message = `${advantageMessage}${rolls.join(' + ')} on the dice `
     console.log('total raw roll is', totalRoll)
     let statModMessage

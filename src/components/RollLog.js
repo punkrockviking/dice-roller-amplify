@@ -80,7 +80,7 @@ class RollLog extends React.Component {
       <>
         <div>RollLog:</div>
         {this.props.log.map((entry) => (
-          <div key={Math.random()}>{entry.timestamp}: {entry.text}</div>
+          <div key={entry.id}>{entry.text} : {entry.timestamp}</div>
         ))}
       </>
     );
