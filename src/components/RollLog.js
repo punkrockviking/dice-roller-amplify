@@ -23,7 +23,7 @@ class RollLog extends React.Component {
       console.log(response)
       const rollLog = response.data.listRollLogs.items
       // set parent state with the 10 roll log entries just listed
-      this.props.update(rollLog)
+      this.props.initialize(rollLog)
     } catch(err) {
       console.error(err)
     }
@@ -80,7 +80,7 @@ class RollLog extends React.Component {
       <>
         <div>RollLog:</div>
         {this.props.log.map((entry) => (
-          <div key={entry.id}>{entry.text} : {entry.timestamp}</div>
+          <div key={entry.timestamp}>{entry.text}</div>
         ))}
       </>
     );

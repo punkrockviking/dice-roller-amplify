@@ -6,24 +6,24 @@ import { createRollLog } from "../graphql/mutations";
 
 class RollButton extends React.Component {
 
-  calcTotalRoll = (rolls, selectedDice, statMod, proficient, feat, advantage) => {
+  calcTotalRoll = (rolls, selectedDice, statMod, proficient, feat, advantage, qty) => {
     // need to conditionally config rolls
     let totalRoll = 0
     const isFeatUsed = statMod.stat === 'str' || statMod.stat === 'dex'
     
     // add up the sum of all indexes in rolls and set totalRoll equal to sum
     totalRoll = rolls.reduce((sum, num) => sum + num, 0)
-    const advantageMessage = advantage ? `${advantage.toUpperCase()}: ` : ''
     // NEED TO GET ADVANTAGE INTO THE CASE 20
-    let message = `${advantageMessage}${rolls.join(' + ')} on the dice `
+    let message = `${rolls.join(' + ')} on the dice `
     console.log('total raw roll is', totalRoll)
     let statModMessage
     switch(selectedDice) {
       case 20 : 
         totalRoll = (totalRoll + statMod.num + proficient.num)
         statModMessage = statMod.stat ? `+ ${statMod.num} for ${statMod.stat} ` : ''
+        const advantageMessage = (advantage && qty == 1) ? `${advantage.toUpperCase()}: ` : ''
         const proficientMessage = proficient.name ? `+ ${proficient.num} for ${proficient.name} ` : ''
-        message += statModMessage + proficientMessage
+        message = advantageMessage + message + statModMessage + proficientMessage
         // roll with adv or disadv
         if (isFeatUsed && feat) {
           // subtract 5 from roll
@@ -51,8 +51,6 @@ class RollButton extends React.Component {
     return [totalRoll, message]
   };
 
-
-
   rollDice = (qty, sides, name) => {
     let rolls = [];
     for (let i = 1; i <= qty; i++) {
@@ -66,36 +64,47 @@ class RollButton extends React.Component {
   };
 
   createLogEntry = async (characterId, text) => {
-    const rollLog = {
+    const logEntry = {
       characterRollLogId: characterId,
       timestamp: new Date(),
       text: text,
     }
-    console.log(rollLog)
+    console.log(logEntry)
+    // add logEntry to log
+    const updatedLog = this.props.log
+    // console.log('old log', updatedLog)
+    if (updatedLog.length >= 10) {
+      updatedLog.pop()
+    }
+    updatedLog.unshift(logEntry)
+    console.log('updatedLog', updatedLog, '++++++++++++++++')
+    this.props.updateRollLog(updatedLog)
+    // mutate entry to backend
     try {
       const response = await API.graphql({
         query: createRollLog,
-        variables: {input: {...rollLog}}
+        variables: {input: {...logEntry}}
       });
       console.log('******************', response)
     } catch(err) {
       console.error(err)
     }
-    return rollLog
+    // return logEntry
   }
   
   onRoll = (event) => {
     event.preventDefault();
     const { selectedDice, statMod, proficient, feat, advantage, name, qty, sides, update, character } = this.props
     const firstRolls = this.rollDice(qty, sides, name);
-    const [firstTotalRoll, firstMessage] = this.calcTotalRoll(firstRolls, selectedDice, statMod, proficient, feat, advantage)
+    const [firstTotalRoll, firstMessage] = this.calcTotalRoll(firstRolls, selectedDice, statMod, proficient, feat, advantage, qty)
     this.createLogEntry(character, firstMessage)
     let totalRoll, secondRolls, secondTotalRoll, secondMessage
-    if (advantage) {
+    if (advantage && (selectedDice == 20 && qty == 1)) {
       secondRolls = this.rollDice(qty, sides, name);
-      [secondTotalRoll, secondMessage] = this.calcTotalRoll(secondRolls, selectedDice, statMod, proficient, feat, advantage)
+      [secondTotalRoll, secondMessage] = this.calcTotalRoll(secondRolls, selectedDice, statMod, proficient, feat, advantage, qty)
       this.createLogEntry(character, secondMessage)
     }
+    
     switch(advantage) {
       case 'advantage':
         totalRoll = Math.max(firstTotalRoll, secondTotalRoll)
@@ -107,7 +116,6 @@ class RollButton extends React.Component {
         totalRoll = firstTotalRoll
         break
     }
-    
     update(totalRoll)
   };
 
