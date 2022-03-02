@@ -18,9 +18,24 @@ class RollLog extends React.Component {
         eq: characterId
         }
       }
+    // try {
+    //   const response = await API.graphql(graphqlOperation(listRollLogs, {filter}, 10)); //limit 10 entries
+    //   console.log(response)
+    //   const rollLog = response.data.listRollLogs.items
+    //   // set parent state with the 10 roll log entries just listed
+    //   this.props.initialize(rollLog)
+    // } catch(err) {
+    //   console.error(err)
+    // }
     try {
-      const response = await API.graphql(graphqlOperation(listRollLogs, {filter}, 10)); //limit 10 entries
-      console.log(response)
+      const response = await API.graphql({
+        query: listRollLogs,
+        variables: {
+          filter,
+          limit: 10
+        },
+      });
+      console.log('******************', response)
       const rollLog = response.data.listRollLogs.items
       // set parent state with the 10 roll log entries just listed
       this.props.initialize(rollLog)

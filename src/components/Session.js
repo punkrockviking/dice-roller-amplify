@@ -147,10 +147,6 @@ class Session extends React.Component {
     })
   }
 
-  // create object that houses all the modifiers and roll values
-  // total component would take sum of all the object values, pass object as prop
-  // createRollLogEntry would construct the roll log based on that object
-
   makeRollObj = () => {
     const rollObj = this.state
     return rollObj

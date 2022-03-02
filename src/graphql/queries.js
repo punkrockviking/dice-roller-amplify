@@ -175,10 +175,10 @@ export const listRollLogs = /* GraphQL */ `
   }
 `;
 // export const listRollLogsByDate = /* GraphQL */ `
-//   query ListRollLogsByDate(
+//   query ListRecentRollLogs(
 //     $filter: ModelRollLogFilterInput
 //     $limit: Int
-//     $sort: [timestamp], $order: desc
+//     # $sort: [timestamp], $order: desc
 //     $nextToken: String
 //   ) {
 //     listRollLogs(filter: $filter, limit: $limit, order: { desc: datePublished }, nextToken: $nextToken) {
