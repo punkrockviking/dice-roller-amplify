@@ -32,7 +32,7 @@ class RollLog extends React.Component {
         query: listRollLogs,
         variables: {
           filter,
-          limit: 10
+          limit: 10,
         },
       });
       console.log('******************', response)
@@ -52,7 +52,10 @@ class RollLog extends React.Component {
     //   .then(({rollLog}) => this.props.fetch({ rollLog }));
     
     // Initialize roll log with data from db
-    this.getRollLog(this.props.id)
+
+    // this.getRollLog(this.props.id)
+    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!',this.props.initialLog)
+    // this.props.initialize(this.props.initialLog)
     
     
         // CHECK THE OBJECT THAT IS BEING RETRIEVED FROM MY QUERY. FIND THE PROPERTY WHERE THE ARRAY IS. YOU NEED TO USE THAT PROPERTY TO MAP THE LOG ENTRIES

@@ -186,9 +186,9 @@ class Session extends React.Component {
       console.log(response)
       const selectedCharacter = response.data.getCharacter
       this.setState(
-        { selectedCharacter },
+        { selectedCharacter, rollLog: selectedCharacter.rollLog.items },
         console.log("selectedCharacter state updated")
-      );
+      )
     } catch(err) {
       console.log(err)
     }
@@ -314,6 +314,7 @@ class Session extends React.Component {
               <RollLog
                 id={this.state.selectedCharacter.id}
                 initialize={this.initializeRollLog}
+                initialLog={this.state.selectedCharacter.rollLog}
                 log={this.state.rollLog}
               />
               <div>

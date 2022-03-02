@@ -64,6 +64,16 @@ export const getCharacter = /* GraphQL */ `
       wis
       int
       chr
+      rollLog(limit: 10, sortDirection: DESC) {
+        items {
+          characterRollLogId
+          createdAt
+          id
+          text
+          timestamp
+          updatedAt
+        }
+      }
     }
   }
 `;
