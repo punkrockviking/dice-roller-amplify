@@ -19,11 +19,12 @@ class RollButton extends React.Component {
     let statModMessage
     switch(selectedDice) {
       case 20 : 
+        const critMessage = (qty == 1 && (totalRoll == 1 || totalRoll == 20) ? 'NATURAL ' : '')
         totalRoll = (totalRoll + statMod.num + proficient.num)
         statModMessage = statMod.stat ? `+ ${statMod.num} for ${statMod.stat} ` : ''
         const advantageMessage = (advantage && qty == 1) ? `${advantage.toUpperCase()}: ` : ''
         const proficientMessage = proficient.name ? `+ ${proficient.num} for ${proficient.name} ` : ''
-        message = advantageMessage + message + statModMessage + proficientMessage
+        message = advantageMessage + critMessage + message + statModMessage + proficientMessage
         // roll with adv or disadv
         if (isFeatUsed && feat) {
           // subtract 5 from roll
