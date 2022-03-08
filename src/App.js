@@ -2,10 +2,11 @@ import React from "react";
 import Profiles from "./components/Profiles";
 // import { Button } from './Button'
 import Session from "./components/Session";
-import Amplify, { Auth, Hub } from 'aws-amplify';
+import Amplify, { Auth, API } from 'aws-amplify';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 import awsExports from "./aws-exports";
 import { withAuthenticator } from '@aws-amplify/ui-react';
+import { listProfiles } from "./graphql/queries"
 // import '@aws-amplify/ui-react/styles.css';
 Amplify.configure(awsExports);
 
@@ -31,6 +32,33 @@ class App extends React.Component {
     );
   };
 
+  componentDidMount = async () => {
+    try {
+      const user = await Auth.currentUserInfo()
+      const response = await API.graphql({
+        query: listProfiles,
+        variables: {filter: {email: {eq: user.attributes.email}}}
+      });
+      console.log('******************', response)
+      this.setState(
+        { selectedProfile: response.data.listProfiles.items[0].id },
+        console.log(this.state)
+      )
+    } catch(err) {
+      console.error(err)
+    }
+
+    // const response = await API.graphql(graphqlOperation(getProfile));
+    // console.log(response)
+    // console.log(response.data.listProfiles.items)
+    // const profiles = response.data.listProfiles.items
+    // this.setState({profiles})
+    // // fetch("/profiles")
+    //   .then((response) => response.json())
+    //   .then((profiles) => this.setState(profiles))
+    //   .then(console.log(this.state));
+  };
+
   // onCharacterClick = (event) => {
   //     event.preventDefault()
   //     this.setState( {selectedCharacter: event.target.attributes.value.nodeValue}, console.log(this.state.selectedCharacter) )
@@ -46,6 +74,9 @@ class App extends React.Component {
 
   render() {
     // console.log(this.state)
+    Auth.currentUserInfo().then(
+      (user) => console.log('!@!@!@!@!@!@!@!', user) 
+    )
     console.log(this.props)
     return (
       <div>
@@ -56,8 +87,7 @@ class App extends React.Component {
             <Session profile={this.state.selectedProfile} />
           ) : (
             <div>
-              Select a profile:
-              <Profiles handleClick={this.onProfileClick} />
+              Loading...
             </div>
           )}
         </div>

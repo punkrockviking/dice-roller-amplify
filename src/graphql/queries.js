@@ -56,6 +56,27 @@ export const getCharacter = /* GraphQL */ `
     getCharacter(id: $id) {
       id
       name
+      profile {
+        id
+        name
+        character {
+          nextToken
+        }
+        activeCharacter
+        createdAt
+        updatedAt
+      }
+      rollLog {
+        items {
+          id
+          timestamp
+          text
+          createdAt
+          updatedAt
+          characterRollLogId
+        }
+        nextToken
+      }
       class
       level
       str
@@ -64,16 +85,9 @@ export const getCharacter = /* GraphQL */ `
       wis
       int
       chr
-      rollLog(limit: 10, sortDirection: DESC) {
-        items {
-          characterRollLogId
-          createdAt
-          id
-          text
-          timestamp
-          updatedAt
-        }
-      }
+      createdAt
+      updatedAt
+      profileCharacterId
     }
   }
 `;
@@ -184,38 +198,3 @@ export const listRollLogs = /* GraphQL */ `
     }
   }
 `;
-// export const listRollLogsByDate = /* GraphQL */ `
-//   query ListRecentRollLogs(
-//     $filter: ModelRollLogFilterInput
-//     $limit: Int
-//     # $sort: [timestamp], $order: desc
-//     $nextToken: String
-//   ) {
-//     listRollLogs(filter: $filter, limit: $limit, order: { desc: datePublished }, nextToken: $nextToken) {
-//       items {
-//         id
-//         character {
-//           id
-//           name
-//           class
-//           level
-//           str
-//           dex
-//           con
-//           wis
-//           int
-//           chr
-//           createdAt
-//           updatedAt
-//           profileCharacterId
-//         }
-//         timestamp
-//         text
-//         createdAt
-//         updatedAt
-//         characterRollLogId
-//       }
-//       nextToken
-//     }
-//   }
-// `;

@@ -35,11 +35,26 @@ class CharacterInfo extends React.Component {
     try {
       const response = await API.graphql({
         query: updateCharacter,
-        variables: {input: {...this.props.character}}
+        // variables: {input: {...this.props.character}},
+        // need to sepparate the different props in this.props.character so that the rollLog is not passed into the update info
+        variables: {
+          input: {
+            id : this.props.character.id,
+            name : this.props.character.name,
+            class: this.props.character.class,
+            level: this.props.character.level,
+            str: this.props.character.str,
+            dex: this.props.character.dex,
+            con: this.props.character.con,
+            wis: this.props.character.wis,
+            int: this.props.character.int,
+            chr: this.props.character.chr,
+        }}
       });
       console.log('******************', response)
     } catch(err) {
       console.error(err)
+      console.log(this.props.character)
     }
     
 
@@ -82,6 +97,18 @@ class CharacterInfo extends React.Component {
               />
             </label>
             <label>PROFICIENCY:{this.calcProficiency()}</label>
+          </form>
+
+          <form onSubmit={this.onFormSubmit}>
+            <label>
+              CLASS
+              <input
+                type="string"
+                name="class"
+                value={this.props.character.class}
+                onChange={this.props.onAttributeChange}
+              />
+            </label>
           </form>
 
           <form onSubmit={this.onFormSubmit}>

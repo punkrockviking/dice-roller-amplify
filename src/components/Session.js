@@ -14,7 +14,7 @@ import Feats from "./Feats"
 import RollLog from "./RollLog";
 import RollButton from "./RollButton";
 import ResetButton from "./ResetButton"
-import { API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation, Auth } from "aws-amplify";
 import { listCharacters, getCharacter, listRollLogs } from "../graphql/queries";
 
 class Session extends React.Component {
@@ -24,10 +24,10 @@ class Session extends React.Component {
       characters: [],
       selectedCharacter: {
         id: "",
-        name: "",
+        name: "new character",
         profile: {},
         class: "",
-        level: 0,
+        level: 1,
         str: 0,
         dex: 0,
         con: 0,
@@ -301,7 +301,9 @@ class Session extends React.Component {
   }
   
   render() {
-    
+      
+  
+
     return (
       <div>
         <div>
