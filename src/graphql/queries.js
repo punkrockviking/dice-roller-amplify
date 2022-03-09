@@ -66,7 +66,7 @@ export const getCharacter = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      rollLog {
+      rollLog(limit: 10, sortDirection: DESC) {
         items {
           id
           timestamp

@@ -182,7 +182,7 @@ class Session extends React.Component {
     //   (character) => character.id === targetId
     // );
     try {
-      const response = await API.graphql(graphqlOperation(getCharacter, {id: targetId}));
+      const response = await API.graphql(graphqlOperation(getCharacter, {id: targetId}, ));
       console.log(response)
       const selectedCharacter = response.data.getCharacter
       this.setState(

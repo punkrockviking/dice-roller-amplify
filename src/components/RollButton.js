@@ -13,7 +13,6 @@ class RollButton extends React.Component {
     
     // add up the sum of all indexes in rolls and set totalRoll equal to sum
     totalRoll = rolls.reduce((sum, num) => sum + num, 0)
-    // NEED TO GET ADVANTAGE INTO THE CASE 20
     let message = `${rolls.join(' + ')} on the dice `
     console.log('total raw roll is', totalRoll)
     let statModMessage
@@ -105,7 +104,6 @@ class RollButton extends React.Component {
       [secondTotalRoll, secondMessage] = this.calcTotalRoll(secondRolls, selectedDice, statMod, proficient, feat, advantage, qty)
       this.createLogEntry(character, secondMessage)
     }
-    
     switch(advantage) {
       case 'advantage':
         totalRoll = Math.max(firstTotalRoll, secondTotalRoll)
@@ -117,6 +115,7 @@ class RollButton extends React.Component {
         totalRoll = firstTotalRoll
         break
     }
+    
     update(totalRoll)
   };
 

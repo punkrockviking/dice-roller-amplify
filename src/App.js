@@ -28,7 +28,7 @@ class App extends React.Component {
     // console.log(event)
     this.setState(
       { selectedProfile: event.target.attributes.value.value },
-      console.log(this.state)
+      // console.log(this.state)
     );
   };
 
@@ -39,7 +39,7 @@ class App extends React.Component {
         query: listProfiles,
         variables: {filter: {email: {eq: user.attributes.email}}}
       });
-      console.log('******************', response)
+      // console.log('******************', response)
       this.setState(
         { selectedProfile: response.data.listProfiles.items[0].id },
         console.log(this.state)
@@ -74,10 +74,10 @@ class App extends React.Component {
 
   render() {
     // console.log(this.state)
-    Auth.currentUserInfo().then(
-      (user) => console.log('!@!@!@!@!@!@!@!', user) 
-    )
-    console.log(this.props)
+    // Auth.currentUserInfo().then(
+    //   (user) => console.log('!@!@!@!@!@!@!@!', user) 
+    // )
+    // console.log(this.props)
     return (
       <div>
         
@@ -87,7 +87,7 @@ class App extends React.Component {
             <Session profile={this.state.selectedProfile} />
           ) : (
             <div>
-              Loading...
+              Loading your profile...
             </div>
           )}
         </div>

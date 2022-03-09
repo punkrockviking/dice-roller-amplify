@@ -13,8 +13,8 @@ class Profiles extends React.Component {
 
   componentDidMount = async () => {
     const response = await API.graphql(graphqlOperation(listProfiles));
-    console.log(response)
-    console.log(response.data.listProfiles.items)
+    // console.log(response)
+    // console.log(response.data.listProfiles.items)
     const profiles = response.data.listProfiles.items
     this.setState({profiles})
     // fetch("/profiles")

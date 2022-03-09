@@ -12,41 +12,41 @@ class RollLog extends React.Component {
 
   //FIGURE OUT A WAY TO FIND THE ARRAY WITH THE LOG ENTRIES THEN MAP THROUGH THE ENTRIES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  getRollLog = async (characterId) => {
-    const filter = {
-      characterRollLogId: {
-        eq: characterId
-        }
-      }
-    // try {
-    //   const response = await API.graphql(graphqlOperation(listRollLogs, {filter}, 10)); //limit 10 entries
-    //   console.log(response)
-    //   const rollLog = response.data.listRollLogs.items
-    //   // set parent state with the 10 roll log entries just listed
-    //   this.props.initialize(rollLog)
-    // } catch(err) {
-    //   console.error(err)
-    // }
-    try {
-      const response = await API.graphql({
-        query: listRollLogs,
-        variables: {
-          filter,
-          limit: 10,
-        },
-      });
-      console.log('******************', response)
-      const rollLog = response.data.listRollLogs.items
-      // set parent state with the 10 roll log entries just listed
-      this.props.initialize(rollLog)
-    } catch(err) {
-      console.error(err)
-    }
-    // console.log('initializing roll log state', { rollLog })
-    // this.setState({ rollLog })
-  }
+  // getRollLog = async (characterId) => {
+  //   const filter = {
+  //     characterRollLogId: {
+  //       eq: characterId
+  //       }
+  //     }
+  //   // try {
+  //   //   const response = await API.graphql(graphqlOperation(listRollLogs, {filter}, 10)); //limit 10 entries
+  //   //   console.log(response)
+  //   //   const rollLog = response.data.listRollLogs.items
+  //   //   // set parent state with the 10 roll log entries just listed
+  //   //   this.props.initialize(rollLog)
+  //   // } catch(err) {
+  //   //   console.error(err)
+  //   // }
+  //   try {
+  //     const response = await API.graphql({
+  //       query: listRollLogs,
+  //       variables: {
+  //         filter,
+  //         limit: 10,
+  //       },
+  //     });
+  //     console.log('******************', response)
+  //     const rollLog = response.data.listRollLogs.items
+  //     // set parent state with the 10 roll log entries just listed
+  //     this.props.initialize(rollLog)
+  //   } catch(err) {
+  //     console.error(err)
+  //   }
+  //   // console.log('initializing roll log state', { rollLog })
+  //   // this.setState({ rollLog })
+  // }
   
-  componentDidMount = () => {
+  // componentDidMount = () => {
     // fetch(`/rollLog?characterId=${this.props.id}`)
     //   .then((response) => response.json())
     //   .then(({rollLog}) => this.props.fetch({ rollLog }));
@@ -59,7 +59,7 @@ class RollLog extends React.Component {
     
     
         // CHECK THE OBJECT THAT IS BEING RETRIEVED FROM MY QUERY. FIND THE PROPERTY WHERE THE ARRAY IS. YOU NEED TO USE THAT PROPERTY TO MAP THE LOG ENTRIES
-  };
+  // };
 
   // onClick = () => {
   //   this.props.update(this.props.createEntry(this.props.lastRoll))
