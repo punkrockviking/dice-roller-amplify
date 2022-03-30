@@ -7,18 +7,19 @@ type Profile @model {
   name: String!
   character: [Character] @hasMany
   activeCharacter: ID
+  email: String!
 }
 
 type Character @model {
   id: ID!
-  name: String!
+  name: String! 
   profile: Profile! @belongsTo
   rollLog: [RollLog] @hasMany
   class: String
-  level: Int
-  str: Int
-  dex: Int
-  con: Int
+  level: Int 
+  str: Int 
+  dex: Int 
+  con: Int 
   wis: Int
   int: Int
   chr: Int
@@ -34,8 +35,8 @@ type Character @model {
 #  reference to orifinal RollLog schema that contains the entire character object that it's linked to
 type RollLog @model {
   id: ID!
+  # type: String! @index(name: "rollLogsByDate", queryField: "rollLogsByDate", sortKeyFields: ["createdAt"])
   character: Character! @belongsTo 
   timestamp: AWSDateTime!
   text: String!
 }
-# need to figure out how to use the belongsTo property in createRollLog
